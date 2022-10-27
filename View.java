@@ -11,7 +11,7 @@ public class View extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 	Model model;
 	Icon board;
-	JLabel background, mancalaA, mancalaB;
+	JLabel background, mancalaA, mancalaB, turnIndicator;
 	ArrayList<JLabel> pitLabels = new ArrayList<JLabel>(12);
 	JButton undoButton;
 	
@@ -19,12 +19,9 @@ public class View extends JFrame implements ChangeListener {
 	public View(Model model) {
 		
 		this.model = model;
-		
 		frameSetup();
-		initializeBackground();
-		initializeMancalas();
-		initializePits();
-		initializeUndoButton();
+		setupComponents();
+		model.attach(this);
 		visualize();
 	}
 
@@ -35,15 +32,30 @@ public class View extends JFrame implements ChangeListener {
 		setLocationRelativeTo(null);
 	}
 	
+	public void setupComponents() {
+		initializeBackground();
+		initializeMancalas();
+		initializePits();
+		initializeUndoButton();
+		initializeTurnIndicator();
+	}
+	
+	public void initializeTurnIndicator() {
+		turnIndicator = new TurnLabel(model);
+		turnIndicator.setBounds(30,380,100,20);
+	}
+	
 	public void initializePits() {
 		int w = 80;
 		int h = 120;
 		int x = 110;
 		int y = 50;
+		
+		int ID = 12;
 
-		for (int i = 0; i <=12; i++) {
-			//should be reading from model data here instead
-			JLabel pit = new PitLabel(model.startingStones);
+		for (int stones : model.getPitStones()) {
+			
+			PitLabel pit = new PitLabel(stones, ID, model);
 			pit.setBounds(x,y,w,h);
 			
 			x+=100;
@@ -53,6 +65,13 @@ public class View extends JFrame implements ChangeListener {
 			}
 			
 			pitLabels.add(pit);
+			model.attach(pit);
+			
+			if (ID > 6) ID--;		//formats ID so it goes from a1-b6, mandala A is 6 and mandala B is 13
+			if (ID < 6) ID++;
+			if (ID == 6) ID=0;
+			
+			
 		}
 	}
 	
@@ -68,11 +87,11 @@ public class View extends JFrame implements ChangeListener {
 	}
 	
 	public void initializeMancalas() {
-		mancalaA = new MancalaLabel(0);
-		mancalaA.setBounds(50,100,40,200);
+		mancalaA = new MancalaLabel(model.mancalaAStones,13,model);
+		mancalaA.setBounds(55,50,50,300);
 		
-		mancalaB = new MancalaLabel(0);
-		mancalaB.setBounds(710,100,40,200);
+		mancalaB = new MancalaLabel(model.mancalaBStones,6,model);
+		mancalaB.setBounds(695,50,50,300);
 	}
 	
 	public void visualize() {
@@ -80,14 +99,14 @@ public class View extends JFrame implements ChangeListener {
 		add(mancalaA);
 		add(mancalaB);
 		add(undoButton);
+		add(turnIndicator);
 		add(background);
 		setVisible(true);
 	}
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-		
+		repaint();
 	}
 
 	
