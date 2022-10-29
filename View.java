@@ -1,8 +1,8 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -23,6 +23,42 @@ public class View extends JFrame implements ChangeListener {
 		setupComponents();
 		model.attach(this);
 		visualize();
+		initializeStoneChoice();
+	}
+
+	private void initializeStoneChoice() {
+		//initializes the stone choice frame
+		JFrame choiceFrame = new JFrame();
+		choiceFrame.setSize(200, 100);
+		choiceFrame.setLayout(new BorderLayout());
+		JLabel label = new JLabel("Enter amount of initial stones (3 or 4)");
+		label.setSize(200, 75);
+		JTextField textField = new JTextField();
+		textField.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String stones = textField.getText();
+				if (Integer.valueOf(stones) == 3 || Integer.valueOf(stones) == 4) {
+					for (int i = 0; i < model.getPitStones().size(); i++) {
+						model.updateStones(i, Integer.valueOf(stones));
+					}
+					choiceFrame.dispose();
+				}
+				else {
+					label.setText("Invalid stone amount, choose 3 or 4");
+					textField.setText("");
+//					choiceFrame.pack();
+				}
+			}
+		});
+		textField.setSize(150,20);
+		choiceFrame.add(label, BorderLayout.NORTH);
+		choiceFrame.add(textField, BorderLayout.CENTER);
+		choiceFrame.setLocationRelativeTo(null);
+		choiceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		choiceFrame.pack();
+		choiceFrame.setVisible(true);
 	}
 
 	public void frameSetup() {

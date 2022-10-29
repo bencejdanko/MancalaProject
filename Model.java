@@ -85,4 +85,12 @@ public class Model {
 			l.stateChanged(new ChangeEvent(this));
 		}
 	}
+
+	public void updateStones(int id, int stones)
+	{
+		pitStoneData.set(id, stones);
+		for (ChangeListener l : listeners){
+			l.stateChanged(new ChangeEvent(this));
+		}
+	}
 }
