@@ -6,6 +6,10 @@ import java.awt.*;
 //there are several assumptions in this class and after the creation of AbstractStrategy I need to sweep it.
 public class viewTester extends AbstractStrategy {
 
+	public viewTester() {
+		super(frame, container);
+	}
+
 	public static void main(String[] args) {
 		Model model = new Model(4);
 		new View(model);
