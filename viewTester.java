@@ -7,7 +7,7 @@ import java.awt.*;
 public class viewTester extends AbstractStrategy {
 
 	public viewTester() {
-		super(frame, container);
+		super();
 	}
 
 	public static void main(String[] args) {
@@ -30,10 +30,36 @@ public class viewTester extends AbstractStrategy {
 			getMancala().get(i).setBounds(320, y, 320, 40);
 			y= y+320;
 			getMancala().get(i).setName("Player" + player);
-			pnlMancala.add(getMancala().get(i));
+			panelMancala.add(getMancala().get(i));
 			player = "B";
 		}
 	}
+
+	@Override
+	public void createLabels() {
+
+	}
+
+	@Override
+	public void createRowAPits() {
+
+	}
+
+	@Override
+	public void createRowBPits() {
+
+	}
+
+	@Override
+	public void insertButton() {
+
+	}
+
+	@Override
+	public void createLabelsForFirstPlayer() {
+
+	}
+
 	//now for labels
 	public void CreateLabels(){
 		firstPlayer = new JLabel("Player 1");
@@ -49,8 +75,8 @@ public class viewTester extends AbstractStrategy {
 		for(int i=0; i<getPlayerLabel().size(); i++){
 			int x= getMancala().get(i).getX() + getMancala().get(i).getWidth() / 3;
 			int y = getMancala().get(i).getY() - getMancala().get(i).getHeight() / 2;
-			getPlayerLabel().get(i).setBounds(xCoord, yCoord, getMancala().get(i).getWidth() / 2, getMancala().get(i).getHeight() / 2);
-			pnlMancala.add(getPlayerLabel().get(i));
+			getPlayerLabel().get(i).setBounds(x, y, getMancala().get(i).getWidth() / 2, getMancala().get(i).getHeight() / 2);
+			panelMancala.add(getPlayerLabel().get(i));
 		}
 
 	}
