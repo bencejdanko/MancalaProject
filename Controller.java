@@ -127,7 +127,14 @@ public class Controller {
                 System.exit(0);
             }
         });
-
+    }
+    public String setStones(int totalNumber)
+    {
+        String stonesToProceed = "";
+        for(int i =0; i < totalNumber; i++){
+            stonesToProceed += "*";
+        }
+        return stonesToProceed;
     }
 }
   //
