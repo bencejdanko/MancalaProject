@@ -60,6 +60,11 @@ public class viewTester extends AbstractStrategy {
 
 	}
 
+	@Override
+	public void getAllButtons() {
+
+	}
+
 	//now for labels
 	public void CreateLabels(){
 		firstPlayer = new JLabel("Player 1");
