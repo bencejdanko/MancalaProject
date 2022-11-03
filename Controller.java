@@ -72,6 +72,54 @@ public class Controller {
             }
         });
 
+        //action listener to perform undo it also states if it exceeds teh max undo limit and will show the
+        // winnings of the players.
+        this.view.addUndoActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(model.getCounter() % 2 == 1 && model.getP1UndoCount() >= 3)
+                {
+                    JOptionPane.showMessageDialog(view.getFrame(), "Exceeded the Undo Limit!");
+                    return;
+                }
+                else if(model.getCounter() % 2 == 0 && model.getP2UndoCount() >= 3)
+                {
+                    JOptionPane.showMessageDialog(view.getFrame(), "Exceeded the Undo Limit!");
+                    return;
+                }
+
+                model.restoreState();
+                for (int i = 0; i < view.getAllButtons().size(); i++) {
+                    view.getAllButtons().get(i).setText(setStones(model.getStonesInPit(i)));
+                }
+
+                view.getMancala().get(0).setText(setStones(model.getStonesInP2Mancala())); //updating mancala1
+                view.getMancala().get(1).setText(setStones(model.getStonesInP1Mancala()));
+                if (model.getCounter() % 2 == 0) {
+                    view.secondPlayerOption(false);
+                    view.firstPlayerOption(true);
+                } else {
+                    view.firstPlayerOption(false);
+                    view.secondPlayerOption(true);
+                }
+                if (model.checkGameOver()) {
+                    if (model.getStonesInP1Mancala() > model.getStonesInP2Mancala())
+                        JOptionPane.showMessageDialog(view.getFrame(), "First Player Wins the Game!");
+                    else if (model.getStonesInP2Mancala() > model.getStonesInP1Mancala())
+                        JOptionPane.showMessageDialog(view.getFrame(), "Second Player Wins the Game!");
+                    else
+                        JOptionPane.showMessageDialog(view.getFrame(), "Match Tie");
+                }
+
+                if(model.getCounter() % 2 == 0)
+                    model.addP1Undo();
+                else
+                    model.addP2Undo();
+            }
+        });
+
+
 
     }
 }

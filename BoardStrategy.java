@@ -1,3 +1,5 @@
+
+
 import java.awt.event.ActionListener;
 
 public interface BoardStrategy {
@@ -11,4 +13,5 @@ public interface BoardStrategy {
     void addMancalaActionListener(ActionListener actionListener);
     void addUndoActionListener(ActionListener actionListener);
 
+    void getAllButtons();
 }
