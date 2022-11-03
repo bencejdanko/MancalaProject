@@ -33,10 +33,8 @@ public class Model {
 	}
 	
 	public ArrayList<Integer> getPitStones() {
-		return (ArrayList<Integer>) (pitStoneData.clone()); 
+		return pitStoneData; 
     }
-	
-	
 	
 	//	13		12	11	10	9	8	7
 	//	
@@ -52,21 +50,22 @@ public class Model {
 		IDcounter++;
 		
 		while (hand > 0) {
-			
-			if (IDcounter == 6) {
+			if (IDcounter == 6) { //if the stone is dropped into mancala A
 				
-				if (playerTurn == 0) {
+				if (playerTurn == 0) { //if it is player A's turn
 					mancalaAStones++;
 					hand--;
-				}
-				
+					if (hand == 0) turn++; //if the last stone is dropped in mancala A as player A, then they get an extra turn
+				} 
+
 				IDcounter++;
 				
-			} else if (IDcounter == 13) {
+			} else if (IDcounter == 13) { //if the stone is dropped into mancala B
 				
-				if (playerTurn == 1) {
+				if (playerTurn == 1) { //if it is player B's turn
 					mancalaBStones++;
 					hand--;
+					if (hand == 0) turn++; //if the last stone is dropped into mancala B as player B, then they get an extra turn
 				}
 				IDcounter = 0;
 				
@@ -75,10 +74,30 @@ public class Model {
 				pitStoneData.set(IDcounter, pitStoneData.get(IDcounter)+1);
 				IDcounter++;
 				hand--;
-				
+				if(hand == 0 && pitStoneData.get(IDcounter)==1 && IDcounter < 6 && playerTurn == 0) { //if the last stone is dropped into an empty pit on player A's side
+					mancalaAStones += pitStoneData.get(12-IDcounter) + 1; //take the stones from the opposite pit and add them to mancala A
+					pitStoneData.set(12-IDcounter, 0);
+					pitStoneData.set(IDcounter, 0);
+
+				} else if (hand == 0 && pitStoneData.get(IDcounter)==1 && IDcounter > 6 && playerTurn == 1) { //if the last stone is dropped into an empty pit on player B's side
+					mancalaBStones += pitStoneData.get(12-IDcounter) + 1; //take the stones from the opposite pit and add them to mancala B
+					pitStoneData.set(12-IDcounter, 0);
+					pitStoneData.set(IDcounter, 0);
+				}
 			}
 		}
-		
+
+		//check if game is over. Keep in mind, indexes 0-5 are player A's pits, 7-12 are player B's pits. 6 and 13 are mancala A and B respectively.
+		if (pitStoneData.subList(0, 5).stream().mapToInt(Integer::intValue).sum() == 0) {
+			mancalaBStones += pitStoneData.subList(7, 12).stream().mapToInt(Integer::intValue).sum();
+			pitStoneData.subList(7, 12).clear();
+			Collections.fill(pitStoneData.subList(0, 5), 0);
+		} else if (pitStoneData.subList(7, 12).stream().mapToInt(Integer::intValue).sum() == 0) {
+			mancalaAStones += pitStoneData.subList(0, 5).stream().mapToInt(Integer::intValue).sum();
+			pitStoneData.subList(0, 5).clear();
+			Collections.fill(pitStoneData.subList(7, 12), 0);
+		}
+
 		turn++;
 		
 		for (ChangeListener l : listeners){
