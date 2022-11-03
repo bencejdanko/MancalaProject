@@ -15,8 +15,7 @@ public class TurnLabel extends JLabel implements ChangeListener {
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		int turn = model.turn%2;
-		if (turn == 0) setText("Player A goes");
+		if (model.getCurrentPlayer().getPlayerID() == 0) setText("Player A goes");
 		else setText("Player B goes");
 	}
 

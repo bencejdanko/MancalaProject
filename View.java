@@ -11,7 +11,8 @@ public class View extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 	Model model;
 	Icon board;
-	JLabel background, mancalaA, mancalaB, turnIndicator;
+	JLabel background, turnIndicator;
+	MancalaLabel mancalaA, mancalaB;
 	ArrayList<JLabel> pitLabels = new ArrayList<JLabel>(12);
 	JButton undoButton;
 	
@@ -70,7 +71,7 @@ public class View extends JFrame implements ChangeListener {
 	
 	public void setupComponents() {
 		initializeBackground();
-		initializeMancalas();
+//		initializeMancalas();
 		initializePits();
 		initializeUndoButton();
 		initializeTurnIndicator();
@@ -85,27 +86,46 @@ public class View extends JFrame implements ChangeListener {
 		int w = 80;
 		int h = 120;
 		int x = 110;
-		int y = 50;
+//		int y = 50;
+		int y = 220;
 		
-		int ID = 12;
+		int ID = 0;
 
 		for (int stones : model.getPitStones()) {
-			
-			PitLabel pit = new PitLabel(stones, ID, model);
-			pit.setBounds(x,y,w,h);
-			
-			x+=100;
-			if (x>=650) {
-				x = 110;
-				y = 220;
+			if (ID == 6) {
+				mancalaA = new MancalaLabel(model.mancalaAStones,ID,model);
+				mancalaA.setBounds(695,50,50,300);
+				model.attach(mancalaA);
 			}
+			else if (ID == 13) {
+				mancalaB = new MancalaLabel(model.mancalaAStones,ID,model);
+				mancalaB.setBounds(55,50,50,300);
+				model.attach(mancalaB);
+			}
+			else{
+				PitLabel pit = new PitLabel(stones, ID, model);
+				pit.setBounds(x,y,w,h);
+				if (ID < 6) {
+					x+=100;
+				}
+				else{
+					x-=100;
+				}
+				if (x>=650) {
+					x-= 100;
+//				y = 220;
+					y= 50;
+				}
+//			System.out.println(ID);
+				pitLabels.add(pit);
+				model.attach(pit);
+			}
+
 			
-			pitLabels.add(pit);
-			model.attach(pit);
-			
-			if (ID > 6) ID--;		//formats ID so it goes from a1-b6, mandala A is 6 and mandala B is 13
-			if (ID < 6) ID++;
-			if (ID == 6) ID=0;
+			ID++;
+			// Player A pits and mancala: 0-6
+			// Player B pits and mancala: 7-13
+
 			
 			
 		}
@@ -114,20 +134,19 @@ public class View extends JFrame implements ChangeListener {
 	public void initializeUndoButton() {
 		undoButton = new JButton("Undo");
 		undoButton.setBounds(680,380,100,20);
+		//todo
+		 undoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 	}
 	
 	public void initializeBackground() {
 		board = new BoardIcon();
 		background = new JLabel(board);
 		background.setBounds(0,0,810,600);
-	}
-	
-	public void initializeMancalas() {
-		mancalaA = new MancalaLabel(model.mancalaAStones,13,model);
-		mancalaA.setBounds(55,50,50,300);
-		
-		mancalaB = new MancalaLabel(model.mancalaBStones,6,model);
-		mancalaB.setBounds(695,50,50,300);
 	}
 	
 	public void visualize() {
