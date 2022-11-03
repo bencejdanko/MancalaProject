@@ -8,6 +8,7 @@ public interface BoardStrategy {
     void insertButton();
     void createLabelsForFirstPlayer();
     void addPitActionListener(ActionListener actionListener);
+    void addMancalaActionListener(ActionListener actionListener);
     void addUndoActionListener(ActionListener actionListener);
 
 }
