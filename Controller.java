@@ -120,6 +120,13 @@ public class Controller {
         });
 
 
+        //to perform the quit the game action
+        view.addQuitActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.exit(0);
+            }
+        });
 
     }
 }
