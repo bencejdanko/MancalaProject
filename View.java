@@ -37,7 +37,7 @@ public class View extends JFrame implements ChangeListener {
 		else if (choice == 1) style = new CloudyStyle();
 		else if (choice == 2) style = new EarthyStyle();
 		else style = new SimpleStyle();
-		
+
 		String[] choices = {"3", "4"};
 		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 		if (input == null) System.exit(0);
@@ -87,7 +87,7 @@ public class View extends JFrame implements ChangeListener {
 				model.attach(mancalaB);
 			}
 			else{
-				PitLabel pit = new PitLabel(stones, ID, model, this);
+				PitLabel pit = new PitLabel(stones, ID, model, this, controller);
 				pit.setBounds(x,y,w,h);
 				if (ID < 6) {
 					x+=100;
