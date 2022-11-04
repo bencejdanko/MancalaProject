@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,57 +8,43 @@ import javax.swing.event.ChangeListener;
 public class View extends JFrame implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
+
 	Model model;
+	Controller controller;
 	Icon board;
 	JLabel background, turnIndicator;
 	MancalaLabel mancalaA, mancalaB;
 	ArrayList<JLabel> pitLabels = new ArrayList<JLabel>(12);
 	JButton undoButton;
 	
+	Style style; // Strategy class for style
+	
 	
 	public View(Model model) {
-		
 		this.model = model;
+		this.controller = new Controller(model, this);
+		initializeStoneChoiceAndStyle();
 		frameSetup();
-		setupComponents();
-		model.attach(this);
+		setupComponents(style);
 		visualize();
-		initializeStoneChoice();
 	}
 
-	private void initializeStoneChoice() {
-		//initializes the stone choice frame
-		JFrame choiceFrame = new JFrame();
-		choiceFrame.setSize(200, 100);
-		choiceFrame.setLayout(new BorderLayout());
-		JLabel label = new JLabel("Enter amount of initial stones (3 or 4)");
-		label.setSize(200, 75);
-		JTextField textField = new JTextField();
-		textField.addActionListener(new ActionListener() {
+	private void initializeStoneChoiceAndStyle() {
+//todo: add a way to choose the style to the given options pane
+		String[] options = {"Simple", "Cloudy", "Earthy"};
+		int choice = JOptionPane.showOptionDialog(null, "Choose a style", "Style", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (choice == 0) style = new SimpleStyle();
+		else if (choice == 1) style = new CloudyStyle();
+		else if (choice == 2) style = new EarthyStyle();
+		else style = new SimpleStyle();
+		
+		String[] choices = {"3", "4"};
+		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+		if (input == null) System.exit(0);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String stones = textField.getText();
-				if (Integer.valueOf(stones) == 3 || Integer.valueOf(stones) == 4) {
-					for (int i = 0; i < model.getPitStones().size(); i++) {
-						model.updateStones(i, Integer.valueOf(stones));
-					}
-					choiceFrame.dispose();
-				}
-				else {
-					label.setText("Invalid stone amount, choose 3 or 4");
-					textField.setText("");
-//					choiceFrame.pack();
-				}
-			}
-		});
-		textField.setSize(150,20);
-		choiceFrame.add(label, BorderLayout.NORTH);
-		choiceFrame.add(textField, BorderLayout.CENTER);
-		choiceFrame.setLocationRelativeTo(null);
-		choiceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		choiceFrame.pack();
-		choiceFrame.setVisible(true);
+		model = new Model(Integer.parseInt(input));
+		model.attach(this);
+		this.controller = new Controller(model, this);
 	}
 
 	public void frameSetup() {
@@ -69,10 +54,9 @@ public class View extends JFrame implements ChangeListener {
 		setLocationRelativeTo(null);
 	}
 	
-	public void setupComponents() {
+	public void setupComponents(Style style) {
 		initializeBackground();
-//		initializeMancalas();
-		initializePits();
+		initializePits(style);
 		initializeUndoButton();
 		initializeTurnIndicator();
 	}
@@ -82,28 +66,28 @@ public class View extends JFrame implements ChangeListener {
 		turnIndicator.setBounds(30,380,100,20);
 	}
 	
-	public void initializePits() {
+	public void initializePits(Style style) {
 		int w = 80;
 		int h = 120;
 		int x = 110;
-//		int y = 50;
 		int y = 220;
 		
 		int ID = 0;
 
-		for (int stones : model.getPitStones()) {
+		for (int stones : model.getStoneData()) {
 			if (ID == 6) {
-				mancalaA = new MancalaLabel(model.mancalaAStones,ID,model);
+				mancalaA = new MancalaLabel(model.getMancalaAStones(),ID,model, this);
+
 				mancalaA.setBounds(695,50,50,300);
 				model.attach(mancalaA);
 			}
 			else if (ID == 13) {
-				mancalaB = new MancalaLabel(model.mancalaAStones,ID,model);
+				mancalaB = new MancalaLabel(model.getMancalaBStones(),ID,model,this);
 				mancalaB.setBounds(55,50,50,300);
 				model.attach(mancalaB);
 			}
 			else{
-				PitLabel pit = new PitLabel(stones, ID, model);
+				PitLabel pit = new PitLabel(stones, ID, model, this);
 				pit.setBounds(x,y,w,h);
 				if (ID < 6) {
 					x+=100;
@@ -113,28 +97,30 @@ public class View extends JFrame implements ChangeListener {
 				}
 				if (x>=650) {
 					x-= 100;
-//				y = 220;
 					y= 50;
 				}
-//			System.out.println(ID);
 				pitLabels.add(pit);
 				model.attach(pit);
 			}
-
-			
 			ID++;
 			// Player A pits and mancala: 0-6
 			// Player B pits and mancala: 7-13
-
-			
 			
 		}
 	}
-	
+
 	public void initializeUndoButton() {
 		undoButton = new JButton("Undo");
 		undoButton.setBounds(680,380,100,20);
-		//todo
+		//todo undo button
+		undoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.undo();
+			}
+	
+		});
+
 		 undoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -144,7 +130,7 @@ public class View extends JFrame implements ChangeListener {
 	}
 	
 	public void initializeBackground() {
-		board = new BoardIcon();
+		board = new BoardIcon(style);
 		background = new JLabel(board);
 		background.setBounds(0,0,810,600);
 	}
@@ -161,8 +147,34 @@ public class View extends JFrame implements ChangeListener {
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		repaint();
+		if (controller.detectAlert()) {
+			if (controller.getAlert().equals(controller.getGameOverAlertCode())) endScreen();
+			alert(controller.getAlert());
+			controller.removeAlert();
+		}
 	}
 
-	
+	public void addController(Controller controller) {
+		this.controller = controller;
+	}
+
+	public void alert(String message) {
+		JOptionPane.showMessageDialog(this, message);
+	}
+
+	public void endScreen() {
+		String message = "Game Over! ";
+		if (model.getMancalaAStones() > model.getMancalaBStones()) {
+			message += "Player A wins!";
+		}
+		else if (model.getMancalaAStones() < model.getMancalaBStones()) {
+			message += "Player B wins!";
+		}
+		else {
+			message += "It's a tie!";
+		}
+		JOptionPane.showMessageDialog(this, message);
+		controller.newGame();
+	}
+
 }

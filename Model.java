@@ -9,22 +9,26 @@ public class Model {
 	private Player A, B, currentPlayer;
 	int startingStones;
 	ArrayList<ChangeListener> listeners;
-	ArrayList<Integer> pitStoneData; //from b6 -> a1
-	int mancalaAStones;
-	int mancalaBStones;
-	int turn;
+	ArrayList<Integer> stoneData; //from a1 to mancala A, then from b1 to mancala B
+	String dataAlert;
+
+	final static String ALERT_NOT_PLAYER_TURN = "Not your turn!";
+	final static String ALERT_PIT_EMPTY = "Pit is empty!";
+	final static String ALERT_GO_AGAIN = "Go again!";
+	final static String ALERT_GAME_OVER = "Game over!";
+
+	public Model() { this(0); }	//default starting stones is 0
 	
 	public Model(int startingStones)  {
-		turn = 0;
-		mancalaAStones = 0;
-		mancalaBStones = 0;
 		this.startingStones = startingStones;
 		A = new Player(0);
 		B = new Player(1);
 		currentPlayer = A;
 		listeners = new ArrayList<ChangeListener>();
-		pitStoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
-		Collections.fill(pitStoneData, startingStones);
+		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
+		Collections.fill(stoneData, startingStones);
+		stoneData.set(6, 0); //mancala A
+		stoneData.set(13, 0); //mancala B
 	}
 
 	
@@ -32,8 +36,8 @@ public class Model {
 		listeners.add(c);
 	}
 	
-	public ArrayList<Integer> getPitStones() {
-		return pitStoneData; 
+	public ArrayList<Integer> getStoneData() {
+		return (ArrayList<Integer>) stoneData.clone(); 
     }
 
 	public Player getCurrentPlayer(){
@@ -44,86 +48,120 @@ public class Model {
 		if (i == 0){
 			currentPlayer = B;
 		}
-		else{
+		else {
 			currentPlayer = A;
 		}
 	}
-	
-	//	13		12	11	10	9	8	7
-	//	
-	//	B									A
-	//
-	//			0	1	2	3	4	5		6
-	
-//	public void update(int ID) {
-//		int hand = pitStoneData.get(ID);
-//		pitStoneData.set(ID, 0);
-//		int playerTurn = turn%2; //if 0, player A's turn, if 1, player B's turn
-//		int IDcounter = ID;
-//		IDcounter++;
-//
-//		while (hand > 0) {
-//			if (IDcounter == 6) { //if the stone is dropped into mancala A
-//
-//				if (playerTurn == 0) { //if it is player A's turn
-//					mancalaAStones++;
-//					hand--;
-//					if (hand == 0) turn++; //if the last stone is dropped in mancala A as player A, then they get an extra turn
-//				}
-//
-//				IDcounter++;
-//
-//			} else if (IDcounter == 13) { //if the stone is dropped into mancala B
-//
-//				if (playerTurn == 1) { //if it is player B's turn
-//					mancalaBStones++;
-//					hand--;
-//					if (hand == 0) turn++; //if the last stone is dropped into mancala B as player B, then they get an extra turn
-//				}
-//				IDcounter = 0;
-//
-//			} else {
-//
-//				pitStoneData.set(IDcounter, pitStoneData.get(IDcounter)+1);
-//				IDcounter++;
-//				hand--;
-//				if(hand == 0 && pitStoneData.get(IDcounter)==1 && IDcounter < 6 && playerTurn == 0) { //if the last stone is dropped into an empty pit on player A's side
-//					mancalaAStones += pitStoneData.get(12-IDcounter) + 1; //take the stones from the opposite pit and add them to mancala A
-//					pitStoneData.set(12-IDcounter, 0);
-//					pitStoneData.set(IDcounter, 0);
-//
-//				} else if (hand == 0 && pitStoneData.get(IDcounter)==1 && IDcounter > 6 && playerTurn == 1) { //if the last stone is dropped into an empty pit on player B's side
-//					mancalaBStones += pitStoneData.get(12-IDcounter) + 1; //take the stones from the opposite pit and add them to mancala B
-//					pitStoneData.set(12-IDcounter, 0);
-//					pitStoneData.set(IDcounter, 0);
-//				}
-//			}
-//		}
-//
-//		//check if game is over. Keep in mind, indexes 0-5 are player A's pits, 7-12 are player B's pits. 6 and 13 are mancala A and B respectively.
-//		if (pitStoneData.subList(0, 5).stream().mapToInt(Integer::intValue).sum() == 0) {
-//			mancalaBStones += pitStoneData.subList(7, 12).stream().mapToInt(Integer::intValue).sum();
-//			pitStoneData.subList(7, 12).clear();
-//			Collections.fill(pitStoneData.subList(0, 5), 0);
-//		} else if (pitStoneData.subList(7, 12).stream().mapToInt(Integer::intValue).sum() == 0) {
-//			mancalaAStones += pitStoneData.subList(0, 5).stream().mapToInt(Integer::intValue).sum();
-//			pitStoneData.subList(0, 5).clear();
-//			Collections.fill(pitStoneData.subList(7, 12), 0);
-//		}
-//
-//		turn++;
-//
-//		for (ChangeListener l : listeners){
-//			l.stateChanged(new ChangeEvent(this));
-//		}
-//	}
 
-	public void updateStones(int id, int stones)
+	public void updateStones(int ID)
 	{
-		pitStoneData.set(id, stones);
+		dataAlert = parseUserChoice(ID);
 		for (ChangeListener l : listeners){
 			l.stateChanged(new ChangeEvent(this));
 		}
+	}
+
+	public String parseUserChoice(int ID) {
+		if (!currentPlayer.respectivePit(ID)) 			return ALERT_NOT_PLAYER_TURN;
+		if (stoneData.get(ID) == 0) 					return ALERT_PIT_EMPTY;
+		return dataParseAndAlert(ID); 
+	}
+	
+	public String dataParseAndAlert(int ID) {
+		currentPlayer.setHand(stoneData.get(ID));
+		stoneData.set(ID, 0);
+		int lastStoneID = passStonesAlong(ID); //returns ID of last stone and updates stoneData
+		
+		if (gameIsOver()) closeGame();
+		if (landOnPlayerEmptyPit(lastStoneID)) 				return captureStonesAndAlert(lastStoneID);
+		if (lastStoneID == currentPlayer.getMancalaID()) 	return ALERT_GO_AGAIN;
+
+		setCurrentPlayer(currentPlayer.getPlayerID());
+		return null; //no alert
+		
+	}
+
+	public boolean gameIsOver() {
+		return (stoneData.subList(0, 6).stream().mapToInt(Integer::intValue).sum()) == 0 || (stoneData.subList(7, 13).stream().mapToInt(Integer::intValue).sum() == 0);
+	}
+
+	public int sumOfPits(Player p) {
+		int sum = 0;
+		for (int i = p.getRespectivePitsRange()[0]; i <= p.getRespectivePitsRange()[1]; i++) {
+			sum += stoneData.get(i);
+		}
+		return sum;
+	}
+
+	public int passStonesAlong(int ID) {
+		int IDcounter = ID;
+		while (currentPlayer.getHand() > 0) {
+			IDcounter++;
+			if (IDcounter >= 14) IDcounter = 0;
+
+			if (IDcounter == currentPlayer.getOppositeMancalaID()) IDcounter++;
+			else if (IDcounter == currentPlayer.getMancalaID()) {
+				stoneData.set(IDcounter, stoneData.get(IDcounter)+1);
+				currentPlayer.decreaseHand();
+			}
+			else {
+				stoneData.set(IDcounter, stoneData.get(IDcounter)+1);
+				currentPlayer.decreaseHand();
+			}
+		}
+		return IDcounter; //last stone ID
+	}
+
+	public String captureStonesAndAlert(int ID) {
+		int oppositeID = currentPlayer.getOppositePitID(ID);
+		int oppositeStones = stoneData.get(oppositeID);
+		stoneData.set(currentPlayer.getMancalaID(), stoneData.get(currentPlayer.getMancalaID()) + oppositeStones + 1);
+		stoneData.set(oppositeID, 0);
+		stoneData.set(ID, 0);
+		setCurrentPlayer(currentPlayer.getPlayerID());
+		return "You captured " + oppositeStones + " stones from your opponent!";
+	}
+
+	public boolean landOnPlayerEmptyPit(int ID) {
+		return stoneData.get(ID) == 1 && currentPlayer.respectivePit(ID);
+	}
+
+	public int getMancalaAStones(){
+		return stoneData.get(6);
+	}
+
+	public int getMancalaBStones() {
+		return stoneData.get(13);
+	}
+
+	public int setMancalaAStones(int stones) {
+		return stoneData.set(6, stones);
+	}
+
+	public int setMancalaBStones(int stones) {
+		return stoneData.set(13, stones);
+	}
+
+	public void removeAlert() {
+		dataAlert = null;
+	}
+
+	public String getAlert() {
+		return dataAlert;
+	}
+
+	public String closeGame() {
+		stoneData.set(currentPlayer.getMancalaID(), stoneData.subList(6, 13).stream().mapToInt(Integer::intValue).sum());
+		stoneData.subList(0, 6).replaceAll(i -> 0);
+		stoneData.subList(7, 13).replaceAll(i -> 0);
+		return ALERT_GAME_OVER;
+	}
+
+	public void undo() {
+		//TODO
+		//Wise move: save the state of the game before each move
+		//and then revert to that state when undo is called
+		//save Player A and B, stoneData, currentPlayer
 	}
 
 }

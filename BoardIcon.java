@@ -12,9 +12,9 @@ public class BoardIcon implements Icon, ImageObserver {
 
 	Image image;
 	
-	public BoardIcon() {
+	public BoardIcon(Style style) {
 		
-		String path = "images/mancalaBoard.png";
+		String path = style.getBackgroundPath();
 		File file = new File(path);
 		
 		try {
