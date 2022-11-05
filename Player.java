@@ -1,9 +1,10 @@
 public class Player {
-    private int hand, pid;
+    private int hand, pid, undoCount;
 
     public Player(int pid) {
         hand = 0;
         this.pid = pid;
+        undoCount = 3;
     }
 
     public int getHand() {
@@ -49,4 +50,11 @@ public class Player {
 		return 12 - ID;
 	}
 
+    public int getUndoCount(){
+        return undoCount;
+    }
+
+    public int setUndoCount(int i){
+        return undoCount = i;
+    }
 }

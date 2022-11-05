@@ -22,14 +22,15 @@ public class View extends JFrame implements ChangeListener {
 	
 	public View(Model model) {
 		this.model = model;
-		this.controller = new Controller(model, this);
-		initializeStoneChoiceAndStyle();
+		new Controller(model, this);
+		initializeStyle();
 		frameSetup();
 		setupComponents(style);
 		visualize();
+		initializeStoneChoice();
 	}
 
-	private void initializeStoneChoiceAndStyle() {
+	private void initializeStyle() {
 //todo: add a way to choose the style to the given options pane
 		String[] options = {"Simple", "Cloudy", "Earthy"};
 		int choice = JOptionPane.showOptionDialog(null, "Choose a style", "Style", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -37,14 +38,23 @@ public class View extends JFrame implements ChangeListener {
 		else if (choice == 1) style = new CloudyStyle();
 		else if (choice == 2) style = new EarthyStyle();
 		else style = new SimpleStyle();
+		model.attach(this);
+		this.controller = new Controller(model, this);
+	}
 
+	private void initializeStoneChoice(){
 		String[] choices = {"3", "4"};
 		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 		if (input == null) System.exit(0);
-
-		model = new Model(Integer.parseInt(input));
-		model.attach(this);
-		this.controller = new Controller(model, this);
+		int i = Integer.parseInt(input);
+		for (int id = 0; id < 14; id++){
+			if (id == 6 || id == 13){
+				model.updateStones(id, 0);
+			}
+			else{
+				model.updateStones(id, i);
+			}
+		}
 	}
 
 	public void frameSetup() {
@@ -120,13 +130,6 @@ public class View extends JFrame implements ChangeListener {
 			}
 	
 		});
-
-		 undoButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
 	}
 	
 	public void initializeBackground() {
@@ -150,6 +153,7 @@ public class View extends JFrame implements ChangeListener {
 		if (controller.detectAlert()) {
 			if (controller.getAlert().equals(controller.getGameOverAlertCode())) endScreen();
 			alert(controller.getAlert());
+			model.prevAlert = (controller.getAlert());
 			controller.removeAlert();
 		}
 	}

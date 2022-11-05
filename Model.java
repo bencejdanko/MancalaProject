@@ -10,13 +10,20 @@ public class Model {
 	int startingStones;
 	ArrayList<ChangeListener> listeners;
 	ArrayList<Integer> stoneData; //from a1 to mancala A, then from b1 to mancala B
-	String dataAlert;
+	String dataAlert, prevAlert;
 
 
-
-	public Model() { this(0); }	//default starting stones is 0
+	public Model() {
+		startingStones = 0;
+		A = new Player(0);
+		B = new Player(1);
+		currentPlayer = A;
+		listeners = new ArrayList<ChangeListener>();
+		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
+		Collections.fill(stoneData, startingStones); }	//default starting stones is 0
 	
 	public Model(int startingStones)  {
+//		System.out.println(startingStones);
 		this.startingStones = startingStones;
 		A = new Player(0);
 		B = new Player(1);
@@ -24,8 +31,8 @@ public class Model {
 		listeners = new ArrayList<ChangeListener>();
 		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
 		Collections.fill(stoneData, startingStones);
-		stoneData.set(6, 0); //mancala A
-		stoneData.set(13, 0); //mancala B
+//		stoneData.set(6, 0); //mancala A
+//		stoneData.set(13, 0); //mancala B
 	}
 
 	
@@ -98,5 +105,7 @@ public class Model {
 	public String getAlert() {
 		return dataAlert;
 	}
+	public String getPreviousAlert(){
+		return prevAlert;};
 
 }
