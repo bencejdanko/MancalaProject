@@ -13,7 +13,7 @@ public class SimpleStyle implements Style {
 	final static int PIT_STONE_MAX_X = 60;
 	final static int PIT_STONE_Y_INCREMENT = 20;
 
-	final static int MANCALA_WIDTH = 40;
+	final static int MANCALA_WIDTH = 45;
 	final static int MANCALA_HEIGHT = 280;
 	final static int MANCALA_STROKE_WIDTH = 5;
 	final static int MANCALA_STONE_STARTING_X = 5;
@@ -22,7 +22,7 @@ public class SimpleStyle implements Style {
 	final static int MANCALA_STONE_MAX_X = 35;
 	final static int MANCALA_STONE_Y_INCREMENT = 20;
 
-    private String boardPath        = "images/mancalaBoard.png";
+    private String boardPath        = "MancalaProject/images/mancalaBoard.png";
     
     @Override
     public void paintPit(Graphics g, int stones) {

@@ -6,7 +6,7 @@ import javax.swing.event.ChangeListener;
 public class MancalaLabel extends JLabel implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	final static int WIDTH = 40;
+	final static int WIDTH = 50;
 	final static int HEIGHT = 280;
 	final static int STROKE_WIDTH = 5;
 	final static int STONE_STARTING_X = 7;

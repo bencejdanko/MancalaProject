@@ -1,7 +1,4 @@
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.BasicStroke;
-import java.awt.Color;
+import java.awt.*;
 
 public class CloudyStyle implements Style {
 
@@ -14,28 +11,30 @@ public class CloudyStyle implements Style {
 	final static int PIT_STONE_MAX_X = 45;
 	final static int PIT_STONE_Y_INCREMENT = 20;
 
-	final static int MANCALA_WIDTH = 40;
+	final static int MANCALA_WIDTH = 50;
 	final static int MANCALA_HEIGHT = 280;
 	final static int MANCALA_STROKE_WIDTH = 5;
 	final static int MANCALA_STONE_STARTING_X = 5;
-	final static int MANCALA_STONE_STARTING_Y = 60;
+	final static int MANCALA_STONE_STARTING_Y = 15;
 	final static int MANCALA_STONE_X_INCREMENT = 10;
 	final static int MANCALA_STONE_MAX_X = 35;
 	final static int MANCALA_STONE_Y_INCREMENT = 20;
 
     private Color primaryColour    = new Color(255,255,255); //white
     private Color secondaryColour  = new Color(0,0,255); //blue
-    private String boardPath        = "images/mancalaBoardCloudy.png";
+    private String boardPath       	= "MancalaProject/images/mancalaBoardCloudy.png";
     
     @Override
     public void paintPit(Graphics g, int stones) {
         
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(PIT_STROKE_WIDTH));
-		g2.drawOval(0,0,PIT_WIDTH,PIT_HEIGHT);
-        g2.setColor(primaryColour);
-        g2.fillOval(0,0,PIT_WIDTH,PIT_HEIGHT);
-
+		g2.setStroke(new BasicStroke(PIT_STROKE_WIDTH));
+		g2.setColor(primaryColour);
+		int cloud_y = 0;
+		for (int i = 0; i < 5; i++) {
+			g2.fillOval(0,cloud_y,PIT_WIDTH,PIT_HEIGHT/3);
+			cloud_y += PIT_HEIGHT/6;
+		}
 		
 		int x = PIT_STONE_STARTING_X;
 		int y = PIT_STONE_STARTING_Y;
@@ -54,10 +53,14 @@ public class CloudyStyle implements Style {
 	@Override
 	public void paintMancala(Graphics g, int stones) {
 		Graphics2D g2 = (Graphics2D) g;
+		
 		g2.setStroke(new BasicStroke(MANCALA_STROKE_WIDTH));
-		g2.drawOval(0,0,MANCALA_WIDTH, MANCALA_HEIGHT);
 		g2.setColor(primaryColour);
-        g2.fillOval(0,0,MANCALA_WIDTH,MANCALA_HEIGHT);
+		int cloud_y = 0;
+		for (int i = 0; i < 11; i++) {
+			g2.fillOval(0,cloud_y,MANCALA_WIDTH,MANCALA_HEIGHT/6);
+			cloud_y += MANCALA_HEIGHT/12;
+		}
 		
 		int x = MANCALA_STONE_STARTING_X;
 		int y = MANCALA_STONE_STARTING_Y;
