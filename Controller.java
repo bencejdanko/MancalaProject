@@ -53,13 +53,7 @@ public class Controller {
 		while (model.getCurrentPlayer().getHand() > 0) {
 			IDcounter++;
 			if (IDcounter >= 14) IDcounter = 0;
-
-			if (IDcounter == model.getCurrentPlayer().getOppositeMancalaID()) IDcounter++;
-			else if (IDcounter == model.getCurrentPlayer().getMancalaID()) {
-				model.updateStones(IDcounter, model.getStoneData().get(IDcounter)+1);
-				model.getCurrentPlayer().decreaseHand();
-			}
-			else {
+			if (!(IDcounter == model.getCurrentPlayer().getOppositeMancalaID())) {
 				model.updateStones(IDcounter, model.getStoneData().get(IDcounter)+1);
 				model.getCurrentPlayer().decreaseHand();
 			}
