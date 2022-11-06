@@ -20,7 +20,7 @@ public class Controller {
     }
 
     public void updateStones(int ID) {
-        model.setDataAlert(parseUserChoice(ID));
+        model.setAlert(parseUserChoice(ID));
         model.updateStones(-1, 0);
     }
 
@@ -36,8 +36,8 @@ public class Controller {
 		model.updateStones(ID, 0);
 		lastStoneID = passStonesAlong(ID); //returns ID of last stone and updates stoneData
 		
-		if (model.gameIsOver()) return closeGame();
 		if (landOnPlayerEmptyPit(lastStoneID)) 				            return captureStonesAndAlert(lastStoneID);
+		if (model.gameIsOver()) return closeGame();
 		if (lastStoneID == model.getCurrentPlayer().getMancalaID()) 	return ALERT_GO_AGAIN;
 
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
@@ -69,6 +69,7 @@ public class Controller {
 		model.updateStones(oppositeID, 0);
 		model.updateStones(ID, 0);
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
+		if (model.gameIsOver()) return closeGame();
 		return "You captured " + oppositeStones + " stones from your opponent!";
 	}
 
@@ -131,10 +132,10 @@ public class Controller {
 			}
 			else{
 				if (model.getCurrentPlayer().getPlayerID() == 1){
-					model.setDataAlert(ALERT_NO_UNDOS_LEFT_PLAYER_B);
+					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_B);
 				}
 				else{
-					model.setDataAlert(ALERT_NO_UNDOS_LEFT_PLAYER_A);
+					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_A);
 				}
 
 				model.updateStones(-1, 0);
@@ -144,6 +145,8 @@ public class Controller {
 
     public void newGame() {
         model = new Model(0);
+		model.setAlert(null);
+		view.dispose();
         view = new View(model);
     }
 

@@ -10,7 +10,7 @@ public class Model {
 	int startingStones;
 	ArrayList<ChangeListener> listeners;
 	ArrayList<Integer> stoneData; //from a1 to mancala A, then from b1 to mancala B
-	String dataAlert, prevAlert;
+	String alert, prevAlert;
 
 
 	public Model() {
@@ -65,8 +65,8 @@ public class Model {
 		}
 	}
 
-	public void setDataAlert(String alert) {
-		dataAlert = alert;
+	public void setAlert(String alert) {
+		this.alert = alert;
 	}
 
 
@@ -99,11 +99,11 @@ public class Model {
 	}
 
 	public void removeAlert() {
-		dataAlert = null;
+		alert = null;
 	}
 
 	public String getAlert() {
-		return dataAlert;
+		return alert;
 	}
 	public String getPreviousAlert(){
 		return prevAlert;};
