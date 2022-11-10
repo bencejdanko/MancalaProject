@@ -57,6 +57,12 @@ public class Model {
 		}
 	}
 
+	/**
+	 * Method to update the number of stones in a pit
+	 * Also notifies listeners of the change
+	 * @param ID the ID of the pit to update, or -1 to only notify listeners of a change
+	 * @param stones the number of stones to update to
+	 */
 	public void updateStones(int ID, int stones)
 	{
 		if (ID != -1) stoneData.set(ID, stones);

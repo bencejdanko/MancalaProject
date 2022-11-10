@@ -28,18 +28,20 @@ public class View extends JFrame implements ChangeListener {
 		setupComponents(style);
 		visualize();
 		initializeStoneChoice();
+		model.attach(this);
+		this.controller = new Controller(model, this);
 	}
 
+	/**
+	 * Prompts the user for what style they want to use. Uses a SimpleStyle by default.
+	 */
 	private void initializeStyle() {
-//todo: add a way to choose the style to the given options pane
 		String[] options = {"Simple", "Cloudy", "Earthy"};
 		int choice = JOptionPane.showOptionDialog(null, "Choose a style", "Style", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		if (choice == 0) style = new SimpleStyle();
 		else if (choice == 1) style = new CloudyStyle();
 		else if (choice == 2) style = new EarthyStyle();
 		else style = new SimpleStyle();
-		model.attach(this);
-		this.controller = new Controller(model, this);
 	}
 
 	private void initializeStoneChoice(){
@@ -148,6 +150,12 @@ public class View extends JFrame implements ChangeListener {
 		setVisible(true);
 	}
 	
+	/**
+	 * Updates the view if it detects an alert from the controller. 
+	 * It displays the alert to the user, or, if the game is over, 
+	 * it displays the winner and calls on the controller to reset the game.
+	 * @param e ChangeEvent from the model
+	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (controller.detectAlert()) {
@@ -163,19 +171,20 @@ public class View extends JFrame implements ChangeListener {
 	}
 
 	public void alert(String message) {
+		if (message == null) return;
 		JOptionPane.showMessageDialog(this, message);
 	}
 
 	public void endScreen() {
 		String message = "Game Over! ";
 		if (model.getMancalaAStones() > model.getMancalaBStones()) {
-			message += "Player A wins!";
+			message += "Player A wins! They had " + controller.getMancalaAStones() + " stones in their mancala, while Player B had " + controller.getMancalaBStones() + " stones.";
 		}
 		else if (model.getMancalaAStones() < model.getMancalaBStones()) {
-			message += "Player B wins!";
+			message += "Player B wins! They had " + controller.getMancalaBStones() + " stones in their mancala, while Player A had " + controller.getMancalaAStones() + " stones.";
 		}
 		else {
-			message += "It's a tie!";
+			message += "It's a tie! Both players had " + controller.getMancalaAStones() + " stones in their mancala.";
 		}
 		JOptionPane.showMessageDialog(this, message);
 		controller.newGame();

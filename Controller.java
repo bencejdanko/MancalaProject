@@ -19,6 +19,11 @@ public class Controller {
 		canUndo = true;
     }
 
+	/**
+	 * This method is called when the user clicks on a pit.
+	 * It calls on the controller to update the model stones and alert.
+	 * @param pitID The ID of the pit that was clicked.
+	 */
     public void updateStones(int ID) {
         model.setAlert(parseUserChoice(ID));
         model.updateStones(-1, 0);
@@ -68,8 +73,8 @@ public class Controller {
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + oppositeStones + 1);
 		model.updateStones(oppositeID, 0);
 		model.updateStones(ID, 0);
-		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 		if (model.gameIsOver()) return closeGame();
+		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 		return "You captured " + oppositeStones + " stones from your opponent!";
 	}
 
@@ -78,7 +83,8 @@ public class Controller {
 	}
 
     public String closeGame() {
-        int stonesLeft = model.getStoneData().subList(6, 13).stream().mapToInt(Integer::intValue).sum();
+        int stonesLeft = model.getStoneData().subList(7, 13).stream().mapToInt(Integer::intValue).sum();
+		stonesLeft += model.getStoneData().subList(0, 6).stream().mapToInt(Integer::intValue).sum();
         model.stoneData.subList(0, 6).replaceAll(i -> 0);
 		model.stoneData.subList(7, 13).replaceAll(i -> 0);
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + stonesLeft);
@@ -86,15 +92,17 @@ public class Controller {
 	}
 
     public void removeAlert() {
+		if (model == null || model.getAlert() == null) return;
         model.removeAlert();
     }
 
     public boolean detectAlert() {
-        return (model.getAlert() != null);
+        return (model != null && model.getAlert() != null);
     }
 
     public String getAlert() {
-        return model.getAlert();
+		if (model == null) return null;
+		return model.getAlert();
     }
 	//undo needs to be worked on and debugged, possible fixes-->store previous moves in an arraylist
 	//main issue right now is go again, otherwise undo works for single moves
@@ -144,13 +152,24 @@ public class Controller {
     }
 
     public void newGame() {
-        model = new Model(0);
-		model.setAlert(null);
+
+		//q: for some reason, whenever I start a new view, the model alert is set to "Game Over!" and alerts the user when the game starts. Why is this?
+		//a: because the model is not reset when a new game is started, so the alert is still set to "Game Over!" from the previous game
+		model = null;
 		view.dispose();
-        view = new View(model);
+        Model model = new Model();
+		new View(model);
     }
 
     public String getGameOverAlertCode()  {
         return ALERT_GAME_OVER;
     }
+
+	public int getMancalaAStones() {
+		return model.getMancalaAStones();
+	}
+
+	public int getMancalaBStones() {
+		return model.getMancalaBStones();
+	}
 }

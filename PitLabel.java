@@ -41,7 +41,6 @@ public class PitLabel extends JLabel implements MouseListener, ChangeListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
 	}
 
 	@Override
