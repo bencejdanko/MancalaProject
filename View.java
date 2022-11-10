@@ -128,10 +128,6 @@ public class View extends JFrame implements ChangeListener {
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		
-//q: for some reason, I am still getting an error that the controller model is null, even with the if statement below. Why?
-//a: because you're calling stateChanged before the controller is initialized. You need to call controller.updateListeners() after you initialize the controller.
-		if (controller.model == null) return;
 		if (controller.detectAlert()) {
 			String alert = controller.getAlert();
 			if (alert.equals(controller.getGameOverAlertCode())) endScreen();
