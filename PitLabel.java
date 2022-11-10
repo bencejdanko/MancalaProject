@@ -9,17 +9,12 @@ public class PitLabel extends JLabel implements MouseListener, ChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	View view;
-	Model model;
-	Controller controller;
 	int ID; 
 	int stones;
 	
-	public PitLabel(int stones, int ID, Model model, View view, Controller controller) {
-		this.model = model;
+	public PitLabel(int ID, View view) {
 		this.view = view;
-		this.controller = controller;
 		this.ID = ID;
-		this.stones = model.getStoneData().get(ID);
 		addMouseListener(this);
 	}
 	
@@ -30,13 +25,13 @@ public class PitLabel extends JLabel implements MouseListener, ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		stones = model.getStoneData().get(ID);
+		stones = view.controller.getStoneData().get(ID);
 		repaint();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		controller.updateStones(ID);
+		view.controller.updateStones(ID);
 	}
 
 	@Override

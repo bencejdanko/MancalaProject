@@ -9,22 +9,23 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 
 public class BoardIcon implements Icon, ImageObserver {
+	View view;
 
-	Image image;
-	
-	public BoardIcon(Style style) {
+	public BoardIcon(View view) {
+		this.view = view;
+	}
+
+	public void paintIcon(Component c, Graphics g, int x, int y) {
 		
-		String path = style.getBackgroundPath();
+		String path = view.style.getBackgroundPath();
 		File file = new File(path);
-		
+		Image image = null;
 		try {
 			image = ImageIO.read(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void paintIcon(Component c, Graphics g, int x, int y) {
+		
 		g.drawImage(image,0,0,this);
 	}
 

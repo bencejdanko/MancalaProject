@@ -17,15 +17,11 @@ public class MancalaLabel extends JLabel implements ChangeListener {
 
 	int ID;
 	int stones;
-	Model model;
 	View view;
 	
-	public MancalaLabel(int stones, int ID, Model model, View view) {
-		this.model = model;
+	public MancalaLabel(int ID, View view) {
 		this.view = view;
 		this.ID = ID;
-		setStones(ID);
-		model.attach(this);
 	}
 	
 	@Override
@@ -40,8 +36,8 @@ public class MancalaLabel extends JLabel implements ChangeListener {
 	}
 	
 	public void setStones(int ID) {
-		if (ID == 6) this.stones = model.getMancalaAStones();
-		else this.stones = model.getMancalaBStones();
+		if (ID == 6) this.stones = view.controller.getMancalaAStones();
+		else this.stones = view.controller.model.getMancalaBStones();
 	}
 
 }

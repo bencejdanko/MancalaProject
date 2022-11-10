@@ -12,18 +12,16 @@ public class Model {
 	ArrayList<Integer> stoneData; //from a1 to mancala A, then from b1 to mancala B
 	String alert, prevAlert;
 
-
 	public Model() {
-		startingStones = 0;
 		A = new Player(0);
 		B = new Player(1);
 		currentPlayer = A;
 		listeners = new ArrayList<ChangeListener>();
 		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
-		Collections.fill(stoneData, startingStones); }	//default starting stones is 0
-	
+		Collections.fill(stoneData, 0);
+	}
+
 	public Model(int startingStones)  {
-//		System.out.println(startingStones);
 		this.startingStones = startingStones;
 		A = new Player(0);
 		B = new Player(1);
@@ -31,8 +29,8 @@ public class Model {
 		listeners = new ArrayList<ChangeListener>();
 		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
 		Collections.fill(stoneData, startingStones);
-//		stoneData.set(6, 0); //mancala A
-//		stoneData.set(13, 0); //mancala B
+		stoneData.set(6, 0); //mancala A
+		stoneData.set(13, 0); //mancala B
 	}
 
 	
@@ -65,7 +63,11 @@ public class Model {
 	 */
 	public void updateStones(int ID, int stones)
 	{
-		if (ID != -1) stoneData.set(ID, stones);
+		stoneData.set(ID, stones);
+		updateListeners();
+	}
+
+	public void updateListeners() {
 		for (ChangeListener l : listeners){
 			l.stateChanged(new ChangeEvent(this));
 		}
@@ -73,19 +75,6 @@ public class Model {
 
 	public void setAlert(String alert) {
 		this.alert = alert;
-	}
-
-
-	public boolean gameIsOver() {
-		return (stoneData.subList(0, 6).stream().mapToInt(Integer::intValue).sum()) == 0 || (stoneData.subList(7, 13).stream().mapToInt(Integer::intValue).sum() == 0);
-	}
-
-	public int sumOfPits(Player p) {
-		int sum = 0;
-		for (int i = p.getRespectivePitsRange()[0]; i <= p.getRespectivePitsRange()[1]; i++) {
-			sum += stoneData.get(i);
-		}
-		return sum;
 	}
 
 	public int getMancalaAStones(){
@@ -102,10 +91,6 @@ public class Model {
 
 	public int setMancalaBStones(int stones) {
 		return stoneData.set(13, stones);
-	}
-
-	public void removeAlert() {
-		alert = null;
 	}
 
 	public String getAlert() {

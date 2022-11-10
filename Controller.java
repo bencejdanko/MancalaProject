@@ -1,3 +1,5 @@
+import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
 public class Controller {
 	private int startingHand, lastStoneID;
 	private boolean canUndo;
@@ -7,17 +9,24 @@ public class Controller {
 	final static String ALERT_NOT_PLAYER_TURN = "Not your turn!";
 	final static String ALERT_PIT_EMPTY = "Pit is empty!";
 	final static String ALERT_GO_AGAIN = "Go again!";
-	final static String ALERT_GAME_OVER = "Game over!";
+	final static String ALERT_GAME_OVER = "Game over! ";
 	final static String ALERT_NO_UNDOS_LEFT_PLAYER_A = "No Undos Left For Player A";
 	final static String ALERT_NO_UNDOS_LEFT_PLAYER_B = "No Undos Left For Player B";
 
-    Controller(Model model, View view) {
-        this.model = model;
-        this.view = view;
-        view.addController(this);
-		startingHand = 0;
+    Controller() {
 		canUndo = true;
     }
+
+	public void startGame() {
+		view.initializeStyle();
+		view.initializeStoneChoice();
+
+		view.frameSetup();
+		view.setupComponents();
+		view.updateControllerListeners(this);
+
+		view.visualize();
+	}
 
 	/**
 	 * This method is called when the user clicks on a pit.
@@ -25,9 +34,14 @@ public class Controller {
 	 * @param pitID The ID of the pit that was clicked.
 	 */
     public void updateStones(int ID) {
-        model.setAlert(parseUserChoice(ID));
-        model.updateStones(-1, 0);
+		String alert = parseUserChoice(ID);
+        model.setAlert(alert);
+		updateListeners();
     }
+
+	public void updateListeners() {
+		model.updateListeners();
+	}
 
     public String parseUserChoice(int ID) {
 		if (!model.getCurrentPlayer().respectivePit(ID))    return ALERT_NOT_PLAYER_TURN;
@@ -42,7 +56,7 @@ public class Controller {
 		lastStoneID = passStonesAlong(ID); //returns ID of last stone and updates stoneData
 		
 		if (landOnPlayerEmptyPit(lastStoneID)) 				            return captureStonesAndAlert(lastStoneID);
-		if (model.gameIsOver()) return closeGame();
+		if (gameIsOver()) return closeGame();
 		if (lastStoneID == model.getCurrentPlayer().getMancalaID()) 	return ALERT_GO_AGAIN;
 
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
@@ -73,7 +87,7 @@ public class Controller {
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + oppositeStones + 1);
 		model.updateStones(oppositeID, 0);
 		model.updateStones(ID, 0);
-		if (model.gameIsOver()) return closeGame();
+		if (gameIsOver()) return closeGame();
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 		return "You captured " + oppositeStones + " stones from your opponent!";
 	}
@@ -93,7 +107,7 @@ public class Controller {
 
     public void removeAlert() {
 		if (model == null || model.getAlert() == null) return;
-        model.removeAlert();
+        model.setAlert(null);
     }
 
     public boolean detectAlert() {
@@ -146,19 +160,15 @@ public class Controller {
 					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_A);
 				}
 
-				model.updateStones(-1, 0);
+				updateListeners();
 			}
 		}
     }
 
     public void newGame() {
-
-		//q: for some reason, whenever I start a new view, the model alert is set to "Game Over!" and alerts the user when the game starts. Why is this?
-		//a: because the model is not reset when a new game is started, so the alert is still set to "Game Over!" from the previous game
 		model = null;
 		view.dispose();
-        Model model = new Model();
-		new View(model);
+        MancalaGame.main(null);
     }
 
     public String getGameOverAlertCode()  {
@@ -172,4 +182,38 @@ public class Controller {
 	public int getMancalaBStones() {
 		return model.getMancalaBStones();
 	}
+
+	public void attachListener(ChangeListener listener) {
+		model.attach(listener);
+	}
+
+	public void setModelWithStartingStones(int startingStones) {
+		model = new Model(startingStones);
+	}
+
+	public Player getCurrentPlayer() {
+		return model.getCurrentPlayer();
+	}
+
+	public ArrayList<Integer> getStoneData() {
+		return model.getStoneData();
+	}
+
+	public void setPreviousAlert(String alert) {
+		model.prevAlert = alert;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+	public void setView(View view) {
+		this.view = view;
+		view.setController(this);
+	}
+
+	public boolean gameIsOver() {
+		return (model.stoneData.subList(0, 6).stream().mapToInt(Integer::intValue).sum()) == 0 || (model.stoneData.subList(7, 13).stream().mapToInt(Integer::intValue).sum() == 0);
+	}
+
 }

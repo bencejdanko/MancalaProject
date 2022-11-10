@@ -5,17 +5,16 @@ import javax.swing.event.ChangeListener;
 public class TurnLabel extends JLabel implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	Model model;
+	View view;
 
-	public TurnLabel(Model model) {
-		this.model = model;
+	public TurnLabel(View view) {
+		this.view = view;
 		setText("Player A goes");
-		model.attach(this);
 	}
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if (model.getCurrentPlayer().getPlayerID() == 0) setText("Player A goes");
+		if (view.controller.getCurrentPlayer().getPlayerID() == 0) setText("Player A goes");
 		else setText("Player B goes");
 	}
 

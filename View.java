@@ -9,33 +9,20 @@ public class View extends JFrame implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
-	Model model;
 	Controller controller;
 	Icon board;
-	JLabel background, turnIndicator;
+	JLabel background;
+	TurnLabel turnIndicator;
 	MancalaLabel mancalaA, mancalaB;
-	ArrayList<JLabel> pitLabels = new ArrayList<JLabel>(12);
+	ArrayList<PitLabel> pitLabels = new ArrayList<PitLabel>(12);
 	JButton undoButton;
 	
 	Style style; // Strategy class for style
-	
-	
-	public View(Model model) {
-		this.model = model;
-		new Controller(model, this);
-		initializeStyle();
-		frameSetup();
-		setupComponents(style);
-		visualize();
-		initializeStoneChoice();
-		model.attach(this);
-		this.controller = new Controller(model, this);
-	}
 
 	/**
 	 * Prompts the user for what style they want to use. Uses a SimpleStyle by default.
 	 */
-	private void initializeStyle() {
+	public void initializeStyle() {
 		String[] options = {"Simple", "Cloudy", "Earthy"};
 		int choice = JOptionPane.showOptionDialog(null, "Choose a style", "Style", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		if (choice == 0) style = new SimpleStyle();
@@ -44,19 +31,12 @@ public class View extends JFrame implements ChangeListener {
 		else style = new SimpleStyle();
 	}
 
-	private void initializeStoneChoice(){
+	public void initializeStoneChoice(){
 		String[] choices = {"3", "4"};
 		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 		if (input == null) System.exit(0);
 		int i = Integer.parseInt(input);
-		for (int id = 0; id < 14; id++){
-			if (id == 6 || id == 13){
-				model.updateStones(id, 0);
-			}
-			else{
-				model.updateStones(id, i);
-			}
-		}
+		controller.setModelWithStartingStones(i);
 	}
 
 	public void frameSetup() {
@@ -66,55 +46,44 @@ public class View extends JFrame implements ChangeListener {
 		setLocationRelativeTo(null);
 	}
 	
-	public void setupComponents(Style style) {
+	public void setupComponents() {
 		initializeBackground();
-		initializePits(style);
+		initializePits();
 		initializeUndoButton();
 		initializeTurnIndicator();
 	}
 	
 	public void initializeTurnIndicator() {
-		turnIndicator = new TurnLabel(model);
+		turnIndicator = new TurnLabel(this);
 		turnIndicator.setBounds(30,380,100,20);
 	}
 	
-	public void initializePits(Style style) {
+	public void initializePits() {
 		int w = 80;
 		int h = 120;
 		int x = 110;
 		int y = 220;
-		
-		int ID = 0;
 
-		for (int stones : model.getStoneData()) {
+		for (int ID = 0; ID < 14; ID++) {
 			if (ID == 6) {
-				mancalaA = new MancalaLabel(model.getMancalaAStones(),ID,model, this);
-
+				mancalaA = new MancalaLabel(ID,this);
 				mancalaA.setBounds(695,50,50,300);
-				model.attach(mancalaA);
 			}
 			else if (ID == 13) {
-				mancalaB = new MancalaLabel(model.getMancalaBStones(),ID,model,this);
+				mancalaB = new MancalaLabel(ID,this);
 				mancalaB.setBounds(55,50,50,300);
-				model.attach(mancalaB);
 			}
 			else{
-				PitLabel pit = new PitLabel(stones, ID, model, this, controller);
+				PitLabel pit = new PitLabel(ID, this);
 				pit.setBounds(x,y,w,h);
-				if (ID < 6) {
-					x+=100;
-				}
-				else{
-					x-=100;
-				}
+				if (ID < 6) x+=100;
+				else x-=100;
 				if (x>=650) {
 					x-= 100;
 					y= 50;
 				}
 				pitLabels.add(pit);
-				model.attach(pit);
 			}
-			ID++;
 			// Player A pits and mancala: 0-6
 			// Player B pits and mancala: 7-13
 			
@@ -135,7 +104,7 @@ public class View extends JFrame implements ChangeListener {
 	}
 	
 	public void initializeBackground() {
-		board = new BoardIcon(style);
+		board = new BoardIcon(this);
 		background = new JLabel(board);
 		background.setBounds(0,0,810,600);
 	}
@@ -147,6 +116,7 @@ public class View extends JFrame implements ChangeListener {
 		add(undoButton);
 		add(turnIndicator);
 		add(background);
+		controller.updateListeners();
 		setVisible(true);
 	}
 	
@@ -158,16 +128,32 @@ public class View extends JFrame implements ChangeListener {
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
+		
+//q: for some reason, I am still getting an error that the controller model is null, even with the if statement below. Why?
+//a: because you're calling stateChanged before the controller is initialized. You need to call controller.updateListeners() after you initialize the controller.
+		if (controller.model == null) return;
 		if (controller.detectAlert()) {
-			if (controller.getAlert().equals(controller.getGameOverAlertCode())) endScreen();
-			alert(controller.getAlert());
-			model.prevAlert = (controller.getAlert());
-			controller.removeAlert();
+			String alert = controller.getAlert();
+			if (alert.equals(controller.getGameOverAlertCode())) endScreen();
+			else {
+				alert(alert);
+				controller.setPreviousAlert(alert);
+				controller.removeAlert();
+			}
 		}
 	}
 
-	public void addController(Controller controller) {
+	public void setController(Controller controller) {
 		this.controller = controller;
+	}
+
+	public void updateControllerListeners(Controller controller) {
+		for (PitLabel pit: pitLabels) controller.attachListener(pit);
+		controller.attachListener(mancalaA);
+		controller.attachListener(mancalaB);
+		controller.attachListener(turnIndicator);
+		controller.attachListener(this);
+		
 	}
 
 	public void alert(String message) {
@@ -177,10 +163,10 @@ public class View extends JFrame implements ChangeListener {
 
 	public void endScreen() {
 		String message = "Game Over! ";
-		if (model.getMancalaAStones() > model.getMancalaBStones()) {
+		if (controller.getMancalaAStones() > controller.getMancalaBStones()) {
 			message += "Player A wins! They had " + controller.getMancalaAStones() + " stones in their mancala, while Player B had " + controller.getMancalaBStones() + " stones.";
 		}
-		else if (model.getMancalaAStones() < model.getMancalaBStones()) {
+		else if (controller.getMancalaAStones() < controller.getMancalaBStones()) {
 			message += "Player B wins! They had " + controller.getMancalaBStones() + " stones in their mancala, while Player A had " + controller.getMancalaAStones() + " stones.";
 		}
 		else {
