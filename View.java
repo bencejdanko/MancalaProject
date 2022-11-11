@@ -133,7 +133,6 @@ public class View extends JFrame implements ChangeListener {
 			if (alert.equals(controller.getGameOverAlertCode())) endScreen();
 			else {
 				alert(alert);
-				controller.setPreviousAlert(alert);
 				controller.removeAlert();
 			}
 		}

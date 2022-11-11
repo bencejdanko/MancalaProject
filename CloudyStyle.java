@@ -22,7 +22,7 @@ public class CloudyStyle implements Style {
 
     private Color primaryColour    = new Color(255,255,255); //white
     private Color secondaryColour  = new Color(0,0,255); //blue
-    private String boardPath       	= "MancalaProject/images/mancalaBoardCloudy.png";
+    private String boardPath       	= "/MancalaProject/images/mancalaBoardCloudy.png";
     
     @Override
     public void paintPit(Graphics g, int stones) {

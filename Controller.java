@@ -2,7 +2,7 @@ import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 public class Controller {
 	private int startingHand, lastStoneID;
-	private boolean canUndo;
+	private boolean canUndo, goAgain;
 	Model model;
     View view;
 
@@ -10,8 +10,9 @@ public class Controller {
 	final static String ALERT_PIT_EMPTY = "Pit is empty!";
 	final static String ALERT_GO_AGAIN = "Go again!";
 	final static String ALERT_GAME_OVER = "Game over! ";
-	final static String ALERT_NO_UNDOS_LEFT_PLAYER_A = "No Undos Left For Player A";
-	final static String ALERT_NO_UNDOS_LEFT_PLAYER_B = "No Undos Left For Player B";
+	final static String ALERT_NO_UNDOS_LEFT_PLAYER_A = "No undos left For Player A";
+	final static String ALERT_NO_UNDOS_LEFT_PLAYER_B = "No undos left For Player B";
+	final static String ALERT_CANT_UNDO = "Can't undo";
 
     Controller() {
 		canUndo = true;
@@ -31,7 +32,7 @@ public class Controller {
 	/**
 	 * This method is called when the user clicks on a pit.
 	 * It calls on the controller to update the model stones and alert.
-	 * @param pitID The ID of the pit that was clicked.
+	 * @param  ID The ID of the pit that was clicked.
 	 */
     public void updateStones(int ID) {
 		String alert = parseUserChoice(ID);
@@ -57,12 +58,17 @@ public class Controller {
 		
 		if (landOnPlayerEmptyPit(lastStoneID)) 				            return captureStonesAndAlert(lastStoneID);
 		if (gameIsOver()) return closeGame();
-		if (lastStoneID == model.getCurrentPlayer().getMancalaID()) 	return ALERT_GO_AGAIN;
-
+		if (lastStoneID == model.getCurrentPlayer().getMancalaID()) {
+			canUndo = true;
+			goAgain = true;
+			return ALERT_GO_AGAIN;
+		}
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 		if (model.getCurrentPlayer().getUndoCount() == 0) {
 			model.getCurrentPlayer().setUndoCount(3);
 		}
+		canUndo = true;
+		goAgain = false;
 		return null; //no alert
 		
 	}
@@ -122,9 +128,9 @@ public class Controller {
 	//main issue right now is go again, otherwise undo works for single moves
     public void undo() {
 		int IDcounter = lastStoneID;
-		if (startingHand > 0){
+		if (startingHand > 0 && canUndo){
 			int i = startingHand;
-			if (model.getPreviousAlert() != ALERT_GO_AGAIN){
+			if (!goAgain){
 				model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 			}
 			if (model.getCurrentPlayer().getUndoCount() >= 1){
@@ -148,6 +154,7 @@ public class Controller {
 				startingHand = 0;
 				model.getCurrentPlayer().setUndoCount(model.getCurrentPlayer().getUndoCount()-1);
 				model.getCurrentPlayer().setHand(0);
+				canUndo = false;
 //			if (model.getCurrentPlayer().getUndoCount() == 0){
 //				canUndo = false;
 //			}
@@ -159,9 +166,12 @@ public class Controller {
 				else{
 					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_A);
 				}
-
 				updateListeners();
 			}
+		}
+		else{
+			model.setAlert(ALERT_CANT_UNDO);
+			updateListeners();
 		}
     }
 

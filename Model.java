@@ -96,7 +96,5 @@ public class Model {
 	public String getAlert() {
 		return alert;
 	}
-	public String getPreviousAlert(){
-		return prevAlert;};
 
 }
