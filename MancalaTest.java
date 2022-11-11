@@ -1,4 +1,4 @@
-public class MancalaGame {
+public class MancalaTest {
 	public static void main(String[] args) {
 		Model model = new Model();
 		Controller controller = new Controller();

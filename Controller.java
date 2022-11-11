@@ -20,13 +20,13 @@ public class Controller {
 
 	public void startGame() {
 		view.initializeStyle();
-		view.initializeStoneChoice();
 
 		view.frameSetup();
 		view.setupComponents();
 		view.updateControllerListeners(this);
 
 		view.visualize();
+		view.initializeStoneChoice();
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class Controller {
     public void newGame() {
 		model = null;
 		view.dispose();
-        MancalaGame.main(null);
+        MancalaTest.main(null);
     }
 
     public String getGameOverAlertCode()  {
