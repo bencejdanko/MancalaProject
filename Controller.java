@@ -1,8 +1,8 @@
 import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 public class Controller {
-	private int startingHand, lastStoneID;
-	private boolean canUndo, goAgain;
+	private int startingHand, lastStoneID, oppositeID, oppositeStones;
+	private boolean canUndo, goAgain, landEmpty;
 	Model model;
     View view;
 
@@ -55,8 +55,13 @@ public class Controller {
 		startingHand = model.getCurrentPlayer().getHand();
 		model.updateStones(ID, 0);
 		lastStoneID = passStonesAlong(ID); //returns ID of last stone and updates stoneData
-		
-		if (landOnPlayerEmptyPit(lastStoneID)) 				            return captureStonesAndAlert(lastStoneID);
+		landEmpty = false;
+		if (landOnPlayerEmptyPit(lastStoneID)) {
+			landEmpty = true;
+			canUndo = true;
+//			System.out.println("here");
+			return captureStonesAndAlert(lastStoneID);
+		}
 		if (gameIsOver()) return closeGame();
 		if (lastStoneID == model.getCurrentPlayer().getMancalaID()) {
 			canUndo = true;
@@ -88,8 +93,8 @@ public class Controller {
 
 
     public String captureStonesAndAlert(int ID) {
-		int oppositeID = model.getCurrentPlayer().getOppositePitID(ID);
-		int oppositeStones = model.getStoneData().get(oppositeID);
+		oppositeID = model.getCurrentPlayer().getOppositePitID(ID);
+		oppositeStones = model.getStoneData().get(oppositeID);
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + oppositeStones + 1);
 		model.updateStones(oppositeID, 0);
 		model.updateStones(ID, 0);
@@ -135,7 +140,9 @@ public class Controller {
 			}
 			if (model.getCurrentPlayer().getUndoCount() >= 1){
 				while (i > 0) {
-					model.updateStones(IDcounter, model.getStoneData().get(IDcounter)-1);
+					if (model.getStoneData().get(IDcounter) != 0) {
+						model.updateStones(IDcounter, model.getStoneData().get(IDcounter) - 1);
+					}
 					IDcounter--;
 					if (IDcounter == -1){
 						if (model.getCurrentPlayer().getPlayerID() == 1){
@@ -149,6 +156,16 @@ public class Controller {
 						IDcounter = 5;
 					}
 					i--;
+				}
+				if (landEmpty){
+					model.updateStones(oppositeID, oppositeStones);
+					if (model.getCurrentPlayer().getPlayerID() == 1){
+						model.updateStones(13, model.getStoneData().get(13) - oppositeStones);
+					}
+					else{
+						model.updateStones(6, model.getStoneData().get(6) - oppositeStones);
+					}
+					landEmpty = false;
 				}
 				model.updateStones(IDcounter, startingHand);
 				startingHand = 0;
