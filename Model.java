@@ -21,12 +21,12 @@ public class Model {
 		Collections.fill(stoneData, 0);
 	}
 
-	public Model(int startingStones)  {
+	public Model(int startingStones, Model model)  {
 		this.startingStones = startingStones;
-		A = new Player(0);
-		B = new Player(1);
-		currentPlayer = A;
-		listeners = new ArrayList<ChangeListener>();
+		A = model.A;
+		B = model.B;
+		currentPlayer = model.currentPlayer;
+		listeners = model.listeners;
 		stoneData = new ArrayList<Integer>(Arrays.asList(new Integer[14]));
 		Collections.fill(stoneData, startingStones);
 		stoneData.set(6, 0); //mancala A

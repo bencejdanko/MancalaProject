@@ -215,7 +215,7 @@ public class Controller {
 	}
 
 	public void setModelWithStartingStones(int startingStones) {
-		model = new Model(startingStones);
+		model = new Model(startingStones, model);
 	}
 
 	public Player getCurrentPlayer() {

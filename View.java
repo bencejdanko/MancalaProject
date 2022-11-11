@@ -37,6 +37,7 @@ public class View extends JFrame implements ChangeListener {
 		if (input == null) System.exit(0);
 		int i = Integer.parseInt(input);
 		controller.setModelWithStartingStones(i);
+		controller.updateListeners();
 	}
 
 	public void frameSetup() {
