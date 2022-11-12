@@ -25,7 +25,7 @@ public class EarthyStyle implements Style {
 
     private Color primaryColour    = new Color(255, 255, 204); //light brown
     private Color secondaryColour  = new Color(0,0,0); //black
-    private String boardPath        = "MancalaProject/images/mancalaBoardEarthy.png";
+    private String boardPath        = "../MancalaProject/images/mancalaBoardEarthy.png";
     
     @Override
     public void paintPit(Graphics g, int stones) {
