@@ -56,7 +56,7 @@ public class Controller {
 		model.updateStones(ID, 0);
 		lastStoneID = passStonesAlong(ID); //returns ID of last stone and updates stoneData
 		landEmpty = false;
-		if (landOnPlayerEmptyPit(lastStoneID)) {
+		if (landOnPlayerEmptyPit(lastStoneID) && model.getStoneData().get(model.getCurrentPlayer().getOppositePitID(lastStoneID)) > 0) {
 			landEmpty = true;
 			canUndo = true;
 //			System.out.println("here");

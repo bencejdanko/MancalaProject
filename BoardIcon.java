@@ -19,13 +19,8 @@ public class BoardIcon implements Icon, ImageObserver {
 		
 		String path = view.style.getBackgroundPath();
 		File file = new File(path);
-//		System.out.println(path);
-//		if (path == null){
-//			System.out.println("here");
-//		}
 		Image image = null;
 		try {
-//			image = ImageIO.read(getClass().getResourceAsStream(path));
 			image = ImageIO.read(file);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -48,7 +43,7 @@ public class BoardIcon implements Icon, ImageObserver {
 
 	@Override
 	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
+		//board background icon is never updated
 		return true;
 	}
 

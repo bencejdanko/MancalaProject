@@ -17,6 +17,7 @@ public interface Style {
 
     /**
      * Get the path to image file for the background.
+     * @return a string containing the path
      */
     String getBackgroundPath();
 
