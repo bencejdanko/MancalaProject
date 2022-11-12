@@ -13,6 +13,8 @@ public class Controller {
 	final static String ALERT_NO_UNDOS_LEFT_PLAYER_A = "No undos left For Player A";
 	final static String ALERT_NO_UNDOS_LEFT_PLAYER_B = "No undos left For Player B";
 	final static String ALERT_CANT_UNDO = "Can't undo";
+	final static String ALERT_UNDOS_LEFT_PLAYER_A = "undos left for Player A";
+	final static String ALERT_UNDOS_LEFT_PLAYER_B = "undos left for Player B";
 
     Controller() {
 		canUndo = true;
@@ -138,28 +140,29 @@ public class Controller {
 			if (!goAgain){
 				model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 			}
-			if (model.getCurrentPlayer().getUndoCount() >= 1){
+			Player currPlayer = model.getCurrentPlayer();
+			if (currPlayer.getUndoCount() >= 1){
 				while (i > 0) {
 					if (model.getStoneData().get(IDcounter) != 0) {
 						model.updateStones(IDcounter, model.getStoneData().get(IDcounter) - 1);
 					}
 					IDcounter--;
 					if (IDcounter == -1){
-						if (model.getCurrentPlayer().getPlayerID() == 1){
+						if (currPlayer.getPlayerID() == 1){
 							IDcounter = 13;
 						}
 						else{
 							IDcounter = 12;
 						}
 					}
-					if (IDcounter == 6 && model.getCurrentPlayer().getPlayerID() == 1){
+					if (IDcounter == 6 && currPlayer.getPlayerID() == 1){
 						IDcounter = 5;
 					}
 					i--;
 				}
 				if (landEmpty){
 					model.updateStones(oppositeID, oppositeStones);
-					if (model.getCurrentPlayer().getPlayerID() == 1){
+					if (currPlayer.getPlayerID() == 1){
 						model.updateStones(13, model.getStoneData().get(13) - oppositeStones);
 					}
 					else{
@@ -169,19 +172,26 @@ public class Controller {
 				}
 				model.updateStones(IDcounter, startingHand);
 				startingHand = 0;
-				model.getCurrentPlayer().setUndoCount(model.getCurrentPlayer().getUndoCount()-1);
-				model.getCurrentPlayer().setHand(0);
+				currPlayer.setUndoCount(model.getCurrentPlayer().getUndoCount()-1);
+				currPlayer.setHand(0);
 				canUndo = false;
-//			if (model.getCurrentPlayer().getUndoCount() == 0){
-//				canUndo = false;
-//			}
+				if (currPlayer.getPlayerID() == 1){
+					model.setAlert(currPlayer.getUndoCount() + " " + ALERT_UNDOS_LEFT_PLAYER_B);
+				}
+				else{
+					model.setAlert(currPlayer.getUndoCount() + " " + ALERT_UNDOS_LEFT_PLAYER_A);
+				}
+				updateListeners();
 			}
 			else{
-				if (model.getCurrentPlayer().getPlayerID() == 1){
+				if (currPlayer.getPlayerID() == 1){
 					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_B);
 				}
 				else{
 					model.setAlert(ALERT_NO_UNDOS_LEFT_PLAYER_A);
+				}
+				if (!goAgain){
+					model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
 				}
 				updateListeners();
 			}
