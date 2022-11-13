@@ -16,12 +16,8 @@ public class PitLabel extends JLabel implements ChangeListener {
 	public PitLabel(int ID, View view) {
 		this.view = view;
 		this.ID = ID;
-		MouseAdapter mouseAdapter = new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				view.controller.updateStones(ID);
-			}
-		};
-		addMouseListener(mouseAdapter);
+		MouseListeners listener = new MouseListeners();
+		addMouseListener(listener);
 	}
 	
 	@Override
@@ -33,5 +29,11 @@ public class PitLabel extends JLabel implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		stones = view.controller.getStoneData().get(ID);
 		repaint();
+	}
+
+	private class MouseListeners extends MouseAdapter{
+		public void mouseClicked(MouseEvent e) {
+			view.controller.updateStones(ID);
+		}
 	}
 }
