@@ -1,11 +1,12 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class PitLabel extends JLabel implements MouseListener, ChangeListener {
+public class PitLabel extends JLabel implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	View view;
@@ -15,7 +16,12 @@ public class PitLabel extends JLabel implements MouseListener, ChangeListener {
 	public PitLabel(int ID, View view) {
 		this.view = view;
 		this.ID = ID;
-		addMouseListener(this);
+		MouseAdapter mouseAdapter = new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				view.controller.updateStones(ID);
+			}
+		};
+		addMouseListener(mouseAdapter);
 	}
 	
 	@Override
@@ -27,32 +33,5 @@ public class PitLabel extends JLabel implements MouseListener, ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		stones = view.controller.getStoneData().get(ID);
 		repaint();
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		view.controller.updateStones(ID);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }
