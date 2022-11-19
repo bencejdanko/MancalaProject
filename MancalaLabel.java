@@ -1,7 +1,5 @@
 import java.awt.Graphics;
 import javax.swing.JLabel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class MancalaLabel extends JLabel{
 	private static final long serialVersionUID = 1L;

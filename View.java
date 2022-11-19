@@ -131,26 +131,18 @@ public class View extends JFrame implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		if (controller.detectAlert()) {
 			String alert = controller.getAlert();
-			if (alert.equals(controller.getGameOverAlertCode())) endScreen();
-			else {
-				for (PitLabel pit: pitLabels){
-					pit.update();
-				}
-				mancalaA.update();
-				mancalaB.update();
-				turnIndicator.update();
-				alert(alert);
-				controller.removeAlert();
+			if (alert.equals(controller.getGameOverAlertCode())) {
+				endScreen();
+				return;
 			}
-		}
-		else{
-			for (PitLabel pit: pitLabels){
-				pit.update();
+			alert(alert);
+			controller.removeAlert();
 			}
-			mancalaA.update();
-			mancalaB.update();
-			turnIndicator.update();
-		}
+
+		for (PitLabel pit: pitLabels) pit.update();
+		mancalaA.update();
+		mancalaB.update();
+		turnIndicator.update();
 	}
 
 	public void setController(Controller controller) {
@@ -158,12 +150,7 @@ public class View extends JFrame implements ChangeListener {
 	}
 
 	public void updateControllerListeners(Controller controller) {
-//		for (PitLabel pit: pitLabels) controller.attachListener(pit);
-//		controller.attachListener(mancalaA);
-//		controller.attachListener(mancalaB);
-//		controller.attachListener(turnIndicator);
 		controller.attachListener(this);
-		
 	}
 
 	public void alert(String message) {

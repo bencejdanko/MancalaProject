@@ -2,7 +2,6 @@ import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.geom.Ellipse2D;
 
 public class EarthyStyle implements Style {
 
