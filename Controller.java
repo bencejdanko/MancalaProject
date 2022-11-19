@@ -15,6 +15,7 @@ public class Controller {
 	final static String ALERT_CANT_UNDO = "Can't undo";
 	final static String ALERT_UNDOS_LEFT_PLAYER_A = "undos left for Player A";
 	final static String ALERT_UNDOS_LEFT_PLAYER_B = "undos left for Player B";
+	final static String ALERT_READY = "Ready to play";
 
     Controller() {
 		canUndo = true;
@@ -226,6 +227,7 @@ public class Controller {
 
 	public void setModelWithStartingStones(int startingStones) {
 		model = new Model(startingStones, model);
+//		model.setAlert(ALERT_READY);
 	}
 
 	public Player getCurrentPlayer() {

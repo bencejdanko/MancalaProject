@@ -3,8 +3,7 @@ import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class MancalaLabel extends JLabel implements ChangeListener {
-
+public class MancalaLabel extends JLabel{
 	private static final long serialVersionUID = 1L;
 	final static int WIDTH = 50;
 	final static int HEIGHT = 280;
@@ -28,9 +27,8 @@ public class MancalaLabel extends JLabel implements ChangeListener {
 	public void paintComponent(Graphics g) {
 		view.style.paintMancala(g, stones);
 	}
-	
-	@Override
-	public void stateChanged(ChangeEvent e) {
+
+	public void update(){
 		setStones(ID);
 		repaint();
 	}

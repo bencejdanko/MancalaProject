@@ -6,8 +6,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class PitLabel extends JLabel implements ChangeListener {
-
+public class PitLabel extends JLabel{
 	private static final long serialVersionUID = 1L;
 	View view;
 	int ID; 
@@ -25,8 +24,7 @@ public class PitLabel extends JLabel implements ChangeListener {
 		view.style.paintPit(g, stones);
 	}
 
-	@Override
-	public void stateChanged(ChangeEvent e) {
+	public void update(){
 		stones = view.controller.getStoneData().get(ID);
 		repaint();
 	}
