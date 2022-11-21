@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
+/**
+ * Fall 2022 CS151 Project Submission
+ * @author Bence Danko & Ryan Yee
+ * @version 1.0 11/20/22
+ *
+ * The View class represents View in the MVC pattern and displays the data for the
+ * Mancala Game, such as the pit data.
+ */
 public class View extends JFrame implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
@@ -31,6 +38,9 @@ public class View extends JFrame implements ChangeListener {
 		else style = new SimpleStyle();
 	}
 
+	/**
+	 * Prompts the user to select the number of stones to start with in each pit (excluding mancala pits)
+	 */
 	public void initializeStoneChoice(){
 		String[] choices = {"3", "4"};
 		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
@@ -40,25 +50,37 @@ public class View extends JFrame implements ChangeListener {
 		controller.updateListeners();
 	}
 
+	/**
+	 * Sets up the view frame
+	 */
 	public void frameSetup() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(810,440);
 		setLayout(null);
 		setLocationRelativeTo(null);
 	}
-	
+
+	/**
+	 * Sets up the components of the view
+	 */
 	public void setupComponents() {
 		initializeBackground();
 		initializePits();
 		initializeUndoButton();
 		initializeTurnIndicator();
 	}
-	
+
+	/**
+	 * Sets up the TurnLabel
+	 */
 	public void initializeTurnIndicator() {
 		turnIndicator = new TurnLabel(this);
 		turnIndicator.setBounds(30,380,100,20);
 	}
-	
+
+	/**
+	 * Sets up all the pits, including mancala pits
+	 */
 	public void initializePits() {
 		int w = 80;
 		int h = 120;
@@ -91,25 +113,27 @@ public class View extends JFrame implements ChangeListener {
 		}
 	}
 
+	/**
+	 * Sets up the Undo button
+	 */
 	public void initializeUndoButton() {
 		undoButton = new JButton("Undo");
 		undoButton.setBounds(680,380,100,20);
-		//todo undo button
-		undoButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.undo();
-			}
-	
-		});
+		undoButton.addActionListener(event -> controller.undo());
 	}
-	
+
+	/**
+	 * Sets up the background for the board
+	 */
 	public void initializeBackground() {
 		board = new BoardIcon(this);
 		background = new JLabel(board);
 		background.setBounds(0,0,810,600);
 	}
-	
+
+	/**
+	 * Adds all the components to the View frame
+	 */
 	public void visualize() {
 		for (JLabel pit: pitLabels) add(pit);
 		add(mancalaA);
@@ -145,19 +169,34 @@ public class View extends JFrame implements ChangeListener {
 		turnIndicator.update();
 	}
 
+	/**
+	 * Sets the controller of the view to the given controller
+	 * @param controller
+	 */
 	public void setController(Controller controller) {
 		this.controller = controller;
 	}
 
+	/**
+	 * Attaches the view to the model with a given controller that holds the model
+	 * @param controller the controller holding the model
+	 */
 	public void updateControllerListeners(Controller controller) {
 		controller.attachListener(this);
 	}
 
+	/**
+	 * Prompts an alert to the Player's when given a message that is not null
+	 * @param message the message containing an alert
+	 */
 	public void alert(String message) {
 		if (message == null) return;
 		JOptionPane.showMessageDialog(this, message);
 	}
 
+	/**
+	 * Produces an end screen when the game is over and displays the outcome of the game.
+	 */
 	public void endScreen() {
 		String message = "Game Over! ";
 		if (controller.getMancalaAStones() > controller.getMancalaBStones()) {

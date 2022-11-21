@@ -1,5 +1,12 @@
 import java.awt.Graphics;
-
+/**
+ * Fall 2022 CS151 Project Submission
+ * @author Bence Danko & Ryan Yee
+ * @version 1.0 11/20/22
+ *
+ * The Style interface represents strategy in the strategy pattern and holds common methods
+ * to paint the Mancala board in a certain style
+ */
 public interface Style {
     /**
      * Paint the pits and their stones.

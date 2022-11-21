@@ -1,7 +1,14 @@
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.BasicStroke;
-
+/**
+ * Fall 2022 CS151 Project Submission
+ * @author Bence Danko & Ryan Yee
+ * @version 1.0 11/20/22
+ *
+ * The SimpleStyle class represents a concrete strategy of the Style interface in the strategy pattern and implements
+ * all methods in the Style interface
+ */
 public class SimpleStyle implements Style {
 
 	final static int PIT_WIDTH = 70;
@@ -23,7 +30,12 @@ public class SimpleStyle implements Style {
 	final static int MANCALA_STONE_Y_INCREMENT = 20;
 
     private String boardPath        = "../MancalaProject/images/mancalaBoard.png";
-    
+
+	/**
+	 * Paint the pits and their stones.
+	 * @param g the graphics context
+	 * @param stones the number of stones in the pit
+	 */
     @Override
     public void paintPit(Graphics g, int stones) {
         
@@ -45,6 +57,11 @@ public class SimpleStyle implements Style {
 		}
     }
 
+	/**
+	 * Paint the mancala and its stones.
+	 * @param g the graphics context
+	 * @param stones the number of stones in the mancala
+	 */
     @Override 
     public void paintMancala(Graphics g, int stones) {
         Graphics2D g2 = (Graphics2D) g;
@@ -65,7 +82,10 @@ public class SimpleStyle implements Style {
 		}
     }
 
-
+	/**
+	 * Get the path to image file for the background.
+	 * @return a string containing the path
+	 */
     @Override
     public String getBackgroundPath() {
         return boardPath;

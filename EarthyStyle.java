@@ -2,7 +2,14 @@ import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.BasicStroke;
 import java.awt.Color;
-
+/**
+ * Fall 2022 CS151 Project Submission
+ * @author Bence Danko & Ryan Yee
+ * @version 1.0 11/20/22
+ *
+ * The EarthyStyle class represents a concrete strategy of the Style interface in the strategy pattern and implements
+ * all methods in the Style interface
+ */
 public class EarthyStyle implements Style {
 
     final static int PIT_WIDTH = 70;
@@ -26,7 +33,12 @@ public class EarthyStyle implements Style {
     private Color primaryColour    = new Color(255, 255, 204); //light brown
     private Color secondaryColour  = new Color(0,0,0); //black
     private String boardPath        = "../MancalaProject/images/mancalaBoardEarthy.png";
-    
+
+	/**
+	 * Paint the pits and their stones.
+	 * @param g the graphics context
+	 * @param stones the number of stones in the pit
+	 */
     @Override
     public void paintPit(Graphics g, int stones) {
         
@@ -51,8 +63,12 @@ public class EarthyStyle implements Style {
 		}
     }
 
-	
-	
+
+	/**
+	 * Paint the mancala and its stones.
+	 * @param g the graphics context
+	 * @param stones the number of stones in the mancala
+	 */
 	@Override
 	public void paintMancala(Graphics g, int stones) {
 		Graphics2D g2 = (Graphics2D) g;
@@ -74,9 +90,12 @@ public class EarthyStyle implements Style {
 				y += MANCALA_STONE_Y_INCREMENT;
 			}
 		}
-		
 	}
 
+	/**
+	 * Get the path to image file for the background.
+	 * @return a string containing the path
+	 */
     @Override
     public String getBackgroundPath() {
         return boardPath;
