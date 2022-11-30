@@ -35,7 +35,7 @@ public class View extends JFrame implements ChangeListener {
 		if (choice == 0) style = new SimpleStyle();
 		else if (choice == 1) style = new CloudyStyle();
 		else if (choice == 2) style = new EarthyStyle();
-		else style = new SimpleStyle();
+		else  System.exit(0);
 	}
 
 	/**
