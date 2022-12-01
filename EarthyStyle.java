@@ -31,7 +31,7 @@ public class EarthyStyle implements Style {
 	final static int MANCALA_STONE_Y_INCREMENT = 10;
 
     private Color primaryColour    = new Color(255, 255, 204); //light brown
-    private Color secondaryColour  = new Color(0,0,0); //black
+    private Color secondaryColour  = new Color(41, 169, 24, 92); //green
     private String boardPath        = "../MancalaProject/images/mancalaBoardEarthy.png";
 
 	/**
