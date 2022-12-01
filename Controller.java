@@ -2,7 +2,7 @@ import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 /**
  * Fall 2022 CS151 Project Submission
- * @author Bence Danko & Ryan Yee
+ * @author Bence Danko, Ryan Yee, & Fnu Kunal
  * @version 1.0 11/20/22
  *
  * The Controller class represents controller in the MVC pattern and mutates the data for the
@@ -146,8 +146,8 @@ public class Controller {
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + oppositeStones + 1);
 		model.updateStones(oppositeID, 0);
 		model.updateStones(ID, 0);
-		if (gameIsOver()) return closeGame();
 		model.setCurrentPlayer(model.getCurrentPlayer().getPlayerID());
+		if (gameIsOver()) return closeGame();
 		return "You captured " + oppositeStones + " stones from your opponent!";
 	}
 
@@ -170,6 +170,7 @@ public class Controller {
 		stonesLeft += model.getStoneData().subList(0, 6).stream().mapToInt(Integer::intValue).sum();
         model.stoneData.subList(0, 6).replaceAll(i -> 0);
 		model.stoneData.subList(7, 13).replaceAll(i -> 0);
+		model.setCurrentPlayer(model.getCurrentPlayer().getMancalaID());
 		model.updateStones(model.getCurrentPlayer().getMancalaID(), model.getStoneData().get(model.getCurrentPlayer().getMancalaID()) + stonesLeft);
 		return ALERT_GAME_OVER;
 	}

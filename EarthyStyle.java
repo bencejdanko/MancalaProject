@@ -27,8 +27,8 @@ public class EarthyStyle implements Style {
 	final static int MANCALA_STONE_STARTING_X = 5;
 	final static int MANCALA_STONE_STARTING_Y = 7;
 	final static int MANCALA_STONE_X_INCREMENT = 10;
-	final static int MANCALA_STONE_MAX_X = 35;
-	final static int MANCALA_STONE_Y_INCREMENT = 20;
+	final static int MANCALA_STONE_MAX_X = 45;
+	final static int MANCALA_STONE_Y_INCREMENT = 10;
 
     private Color primaryColour    = new Color(255, 255, 204); //light brown
     private Color secondaryColour  = new Color(0,0,0); //black

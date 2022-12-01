@@ -26,8 +26,8 @@ public class SimpleStyle implements Style {
 	final static int MANCALA_STONE_STARTING_X = 5;
 	final static int MANCALA_STONE_STARTING_Y = 7;
 	final static int MANCALA_STONE_X_INCREMENT = 10;
-	final static int MANCALA_STONE_MAX_X = 35;
-	final static int MANCALA_STONE_Y_INCREMENT = 20;
+	final static int MANCALA_STONE_MAX_X = 45;
+	final static int MANCALA_STONE_Y_INCREMENT = 10;
 
     private String boardPath        = "../MancalaProject/images/mancalaBoard.png";
 
