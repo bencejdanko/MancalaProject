@@ -1,7 +1,7 @@
 import java.awt.Graphics;
 /**
  * Fall 2022 CS151 Project Submission
- * @author Bence Danko & Ryan Yee
+ * @author Bence Danko
  * @version 1.0 11/20/22
  *
  * The Style interface represents strategy in the strategy pattern and holds common methods
