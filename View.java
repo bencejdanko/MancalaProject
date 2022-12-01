@@ -42,7 +42,7 @@ public class View extends JFrame implements ChangeListener {
 	 * Prompts the user to select the number of stones to start with in each pit (excluding mancala pits)
 	 */
 	public void initializeStoneChoice(){
-		String[] choices = {"3", "4"};
+		String[] choices = {"1", "2","3", "4"};
 		String input = (String) JOptionPane.showInputDialog(null, "Choose the number of stones per pit:", "Input", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 		if (input == null) System.exit(0);
 		int i = Integer.parseInt(input);
