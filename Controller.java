@@ -357,7 +357,7 @@ public class Controller {
 	}
 
 	/**
-	 * Sets the view to the givern view
+	 * Sets the view to the given view
 	 * @param view
 	 */
 	public void setView(View view) {
